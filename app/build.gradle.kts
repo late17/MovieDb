@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.material.icons.extended)
     implementation(libs.navigation.compose)
+    implementation(libs.ui.lifecycle.compose)
 
     // UI Utils
     implementation(libs.splashscreen)
@@ -107,4 +108,9 @@ dependencies {
     implementation(libs.room.ktx)
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
+
+    // Credentials && Auth
+//    implementation(libs.androidx.credentials)
+//    implementation(libs.androidx.credentials.playservices)
+//    implementation(libs.auth.google)
 }

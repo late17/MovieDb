@@ -7,4 +7,6 @@ import miolate.petproject.moviedb.app.base.DataState
 interface AuthState {
 
     val user: StateFlow<DataState<String, DataError>>
+
+    fun signIn(): DataState<String, DataError>
 }

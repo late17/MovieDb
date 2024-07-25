@@ -1,4 +1,4 @@
-package miolate.petproject.moviedb.navigation
+package miolate.petproject.moviedb.ui.navigation
 
 enum class NavRoutes(val route: String) {
     HOME("home"),

@@ -1,4 +1,4 @@
-package miolate.petproject.moviedb.navigation
+package miolate.petproject.moviedb.ui.navigation
 
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable

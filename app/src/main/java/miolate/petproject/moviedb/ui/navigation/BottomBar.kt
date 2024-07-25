@@ -1,9 +1,11 @@
-package miolate.petproject.moviedb.navigation
+package miolate.petproject.moviedb.ui.navigation
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -14,16 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import miolate.librarium.ui_base.theme.spacing
+import miolate.petproject.moviedb.ui.theme.spacing
 import miolate.petproject.moviedb.ui.base.SpacerValue
 import miolate.petproject.moviedb.ui.theme.SecondaryBlack
-import kotlin.reflect.KFunction1
 
 
 @Composable
 fun BottomBar(
     currentRoute: String?,
-    navigateToRoute: KFunction1<String, Unit>,
+    navigateToRoute: (String) -> Unit = {},
 ) {
     BottomNavigation(
         backgroundColor = SecondaryBlack
@@ -59,6 +60,7 @@ private fun IconAndName(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .navigationBarsPadding()
             .clickable { navigateToRoute() }
             .padding(top = spacing.extraSmall)
     ) {
