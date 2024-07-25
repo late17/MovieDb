@@ -11,4 +11,10 @@ class AuthStateImpl : AuthState {
     private val _user: MutableStateFlow<DataState<String, DataError>> =
         MutableStateFlow(DataState.Failure())
     override val user: StateFlow<DataState<String, DataError>> = _user
+
+    //to be done
+    override fun signIn(): DataState<String, DataError> {
+        _user.value = DataState.Success("Ivan Vachilia")
+        return _user.value
+    }
 }

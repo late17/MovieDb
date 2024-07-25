@@ -1,4 +1,4 @@
-package miolate.librarium.ui_base.theme
+package miolate.petproject.moviedb.ui.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable

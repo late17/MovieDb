@@ -1,4 +1,4 @@
-package miolate.petproject.moviedb.navigation
+package miolate.petproject.moviedb.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -11,11 +11,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import miolate.petproject.moviedb.RootViewModel
@@ -57,24 +54,12 @@ fun App(viewModel: RootViewModel) {
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = NavRoutes.LOGIN.route,
+                    startDestination = NavRoutes.HOME.route,
                 ) {
                     navGraph(navController)
                 }
             }
         }
-    }
-}
-
-fun NavGraphBuilder.navGraph(navController: NavController) {
-    composable(NavRoutes.LOGIN.route) {
-
-    }
-    composable(NavRoutes.HOME.route) {
-
-    }
-    composable(NavRoutes.PROFILE.route) {
-
     }
 }
 

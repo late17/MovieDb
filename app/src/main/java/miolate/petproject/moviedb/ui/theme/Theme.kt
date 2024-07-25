@@ -13,10 +13,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import miolate.librarium.ui_base.theme.FontSizes
-import miolate.librarium.ui_base.theme.LocalFontSizes
-import miolate.librarium.ui_base.theme.LocalSpacing
-import miolate.librarium.ui_base.theme.Spacing
 
 private val DarkColorScheme = darkColors(
     primary = Indigo,

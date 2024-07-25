@@ -21,6 +21,9 @@ kotlin-plugin-serialization = "1.9.22"
 accompanist-systemuicontroller = "0.27.0"
 ktor = "2.3.12"
 room = "2.6.1"
+credential-manager = "1.3.0-rc01"
+google-auth = "1.1.1"
+lifecyle-aware = "2.8.3"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -35,16 +38,18 @@ ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+ui-lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecyle-aware" }
+
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material = { group = "androidx.compose.material", name = "material" }
-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt"}
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt"}
+hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose"}
-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil"}
-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended"}
-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen"}
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller"}
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended" }
+splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }
 
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
@@ -57,11 +62,15 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
+#androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credential-manager" }
+#androidx-credentials-playservices = { group = "androidx.credentials", name = " credentials-play-services-auth", version.ref = "credential-manager" }
+#auth-google = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-auth" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinKsp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }
-kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-plugin-serialization"}
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-plugin-serialization" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
