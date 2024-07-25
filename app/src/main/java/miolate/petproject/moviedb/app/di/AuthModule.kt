@@ -14,7 +14,7 @@ import javax.inject.Singleton
 interface AuthModule {
 
     @Binds
-    fun bindsIAuthProvides(authRepo: AuthStateImpl): AuthState
+    fun bindsAuthProvides(authRepo: AuthStateImpl): AuthState
 
     companion object {
 
