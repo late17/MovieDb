@@ -3,7 +3,7 @@ package miolate.petproject.moviedb.data.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Result(
+data class ResultResponse(
     val adult: Boolean,
     val backdropPath: String,
     val genreIds: List<Int>,

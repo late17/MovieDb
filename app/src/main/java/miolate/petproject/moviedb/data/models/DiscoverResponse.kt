@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DiscoverResponse(
     val page: Int,
-    val results: List<Result>,
+    val resultResponses: List<ResultResponse>,
     val totalPages: Int,
     val totalResults: Int
 )

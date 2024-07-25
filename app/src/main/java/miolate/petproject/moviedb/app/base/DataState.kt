@@ -1,5 +1,6 @@
 package miolate.petproject.moviedb.app.base
 
+//Data State includes Loading
 sealed interface DataState<out T, out E : RootError> {
 
     data class Failure<T, E : RootError>(val e: E? = null, val message: String? = null) :
