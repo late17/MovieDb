@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
  * A simple base ViewModel utilizing Compose' reactivity.
  */
 @Stable
-abstract class ComposeViewModel<UiState, UiEvent>(
+abstract class BaseViewModel<UiState, UiEvent>(
     initialState: () -> UiState,
     ) : ViewModel() {
 

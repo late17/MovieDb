@@ -5,15 +5,14 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import miolate.petproject.moviedb.domain.AuthState
-import miolate.petproject.moviedb.ui.base.ComposeViewModel
-import miolate.petproject.moviedb.ui.navigation.NavRoutes
+import miolate.petproject.moviedb.ui.base.BaseViewModel
 import miolate.petproject.moviedb.ui.navigation.NavigationPath
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authProvider: AuthState
-) : ComposeViewModel<LoginState, LoginEvents>({ LoginState() }) {
+) : BaseViewModel<LoginState, LoginEvents>({ LoginState() }) {
 
     private val _navigation = MutableSharedFlow<NavigationPath>(
         extraBufferCapacity = 1,
