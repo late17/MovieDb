@@ -17,8 +17,8 @@ abstract class BaseViewModel<UiState, UiEvent>(
      * Compose ui state.
      * Change this state only via copy methods.
      */
-    protected var _state: MutableStateFlow<UiState> = MutableStateFlow(initialState.invoke())
-    val uiState: StateFlow<UiState> = _state
+    protected var _uiState: MutableStateFlow<UiState> = MutableStateFlow(initialState.invoke())
+    val uiState: StateFlow<UiState> = _uiState
 
     /**
      * Sends an event of an action that happened

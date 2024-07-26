@@ -15,12 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import miolate.petproject.moviedb.R
 import miolate.petproject.moviedb.ui.base.SpacerValue
 import miolate.petproject.moviedb.ui.base.SpacerWeight
 import miolate.petproject.moviedb.ui.base.collectAsEffect
 import miolate.petproject.moviedb.ui.navigation.NavRoutes
+import miolate.petproject.moviedb.ui.navigation.navigateAndRemoveFromBackStack
 import miolate.petproject.moviedb.ui.theme.spacing
 
 @Composable
@@ -30,13 +30,9 @@ fun LoginScreen(navController: NavController) {
     viewModel.navigation.collectAsEffect {
         when (it) {
             LoginViewModel.Navigation.NavigateToHome -> {
-                val navOptions = NavOptions.Builder()
-                    .setPopUpTo(NavRoutes.LOGIN.route, inclusive = true)
-                    .setLaunchSingleTop(true)
-                    .build()
-                navController.navigate(
-                    NavRoutes.HOME.route,
-                    navOptions
+                navController.navigateAndRemoveFromBackStack(
+                    NavRoutes.LOGIN,
+                    NavRoutes.HOME,
                 )
             }
 

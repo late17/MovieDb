@@ -6,8 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import miolate.petproject.moviedb.data.remote.HttpClient
-import miolate.petproject.moviedb.data.remote.MovieApi
-import miolate.petproject.moviedb.data.remote.MovieApiImpl
+import miolate.petproject.moviedb.data.remote.RemoteDataSource
+import miolate.petproject.moviedb.data.remote.RemoteDataSourceImpl
 import javax.inject.Singleton
 
 @Module
@@ -15,14 +15,14 @@ import javax.inject.Singleton
 interface RemoteModule {
 
     @Binds
-    fun bindsMovieApi(movieApi: MovieApiImpl): MovieApi
+    fun bindsMovieApi(movieApi: RemoteDataSourceImpl): RemoteDataSource
 
     companion object {
 
         @Provides
         @Singleton
-        fun providesMovieApiImpl(): MovieApiImpl {
-            return MovieApiImpl(HttpClient.getHttpClient())
+        fun providesMovieApiImpl(): RemoteDataSourceImpl {
+            return RemoteDataSourceImpl(HttpClient.getHttpClient())
         }
     }
 }

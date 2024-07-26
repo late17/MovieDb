@@ -83,7 +83,7 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    // Compose
+    // UI & Compose
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
@@ -93,8 +93,8 @@ dependencies {
     implementation(libs.material.icons.extended)
     implementation(libs.navigation.compose)
     implementation(libs.ui.lifecycle.compose)
-
-    // UI Utils
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.compose)
     implementation(libs.splashscreen)
     implementation(libs.accompanist.systemuicontroller)
 

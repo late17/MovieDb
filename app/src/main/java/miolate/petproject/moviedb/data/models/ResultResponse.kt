@@ -1,6 +1,7 @@
 package miolate.petproject.moviedb.data.models
 
 import kotlinx.serialization.Serializable
+import miolate.petproject.moviedb.domain.model.Movie
 
 @Serializable
 data class ResultResponse(
@@ -18,4 +19,21 @@ data class ResultResponse(
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int
-)
+) {
+    fun toMovie(): Movie = Movie(
+        adult,
+        backdropPath,
+        genreIds,
+        id,
+        originalLanguage,
+        originalTitle,
+        overview,
+        popularity,
+        posterPath,
+        releaseDate,
+        title,
+        video,
+        voteAverage,
+        voteCount
+    )
+}

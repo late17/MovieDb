@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import miolate.petproject.moviedb.domain.AuthState
 import miolate.petproject.moviedb.ui.base.BaseViewModel
-import miolate.petproject.moviedb.ui.navigation.NavigationPath
+import miolate.petproject.moviedb.ui.events.NavigationPath
 import javax.inject.Inject
 
 @HiltViewModel

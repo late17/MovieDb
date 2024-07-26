@@ -28,9 +28,9 @@ fun App(viewModel: RootViewModel) {
 
     LaunchedEffect(key1 = state) {
         when (state) {
-            is DataState.Failure -> navController.navigate(NavRoutes.LOGIN.route)
-            is DataState.Loading -> navController.navigate(NavRoutes.LOGIN.route)
-            is DataState.Success -> navController.navigate(NavRoutes.HOME.route)
+            is DataState.Failure -> navController.navigateAndRemoveFromBackStack(NavRoutes.DEFAULT, NavRoutes.LOGIN)
+            is DataState.Loading -> navController.navigateAndRemoveFromBackStack(NavRoutes.DEFAULT, NavRoutes.LOGIN)
+            is DataState.Success -> navController.navigateAndRemoveFromBackStack(NavRoutes.DEFAULT, NavRoutes.HOME)
         }
     }
 
@@ -54,7 +54,7 @@ fun App(viewModel: RootViewModel) {
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = NavRoutes.HOME.route,
+                    startDestination = NavRoutes.DEFAULT.route,
                 ) {
                     navGraph(navController)
                 }
