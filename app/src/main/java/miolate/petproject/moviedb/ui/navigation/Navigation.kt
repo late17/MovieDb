@@ -19,7 +19,7 @@ fun NavController.navigate(
 fun NavController.navigateAndRemoveFromBackStack(
     currentRoute: NavRoutes,
     route: NavRoutes,
-){
+) {
     val navOptions = NavOptions.Builder()
         .setPopUpTo(currentRoute.route, inclusive = true)
         .setLaunchSingleTop(true)

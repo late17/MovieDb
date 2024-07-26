@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -16,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import miolate.petproject.moviedb.ui.theme.spacing
 import miolate.petproject.moviedb.ui.base.SpacerValue
 import miolate.petproject.moviedb.ui.theme.SecondaryBlack
+import miolate.petproject.moviedb.ui.theme.spacing
 
 
 @Composable

@@ -71,7 +71,7 @@ class HomeViewModel @Inject constructor(
     }
 
     override fun onEvent(event: HomeEvents) {
-        when(event){
+        when (event) {
             HomeEvents.LoadNextItems -> loadNextItems()
         }
     }

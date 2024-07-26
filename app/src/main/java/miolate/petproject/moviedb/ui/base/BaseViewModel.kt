@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 abstract class BaseViewModel<UiState, UiEvent>(
     initialState: () -> UiState,
-    ) : ViewModel() {
+) : ViewModel() {
 
     /**
      * Compose ui state.

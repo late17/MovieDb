@@ -8,7 +8,7 @@ import miolate.petproject.moviedb.features.login.LoginScreen
 import miolate.petproject.moviedb.features.profile.ProfileScreen
 
 fun NavGraphBuilder.navGraph(navController: NavController) {
-    composable(NavRoutes.DEFAULT.route){
+    composable(NavRoutes.DEFAULT.route) {
 
     }
     composable(NavRoutes.LOGIN.route) {

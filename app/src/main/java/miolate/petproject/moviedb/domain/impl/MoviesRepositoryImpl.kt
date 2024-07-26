@@ -10,6 +10,7 @@ import miolate.petproject.moviedb.domain.model.Movie
 class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : MoviesRepository {
 
     override suspend fun getMovies(pageNumber: Int): DataResult<List<Movie>, DataError> {
-        return remoteDataSource.getMovies(pageNumber).mapIfSuccess { it -> it.results.map { it.toMovie() } }
+        return remoteDataSource.getMovies(pageNumber)
+            .mapIfSuccess { it -> it.results.map { it.toMovie() } }
     }
 }
