@@ -47,9 +47,9 @@ class HomeViewModel @Inject constructor(
         onSuccess = { items, newKey ->
             _uiState.update {
                 it.copy(
-                    movies = _uiState.value.movies + items,
                     page = newKey,
-                    endReached = items.isEmpty()
+                    endReached = items.isEmpty(),
+                    movies = _uiState.value.movies + items
                 )
             }
         },
@@ -73,7 +73,17 @@ class HomeViewModel @Inject constructor(
     override fun onEvent(event: HomeEvents) {
         when (event) {
             HomeEvents.LoadNextItems -> loadNextItems()
+            is HomeEvents.LikeMovie -> likeMovie(event.id)
+            is HomeEvents.ShareMovie -> shareMovie(event.id)
         }
+    }
+
+    private fun shareMovie(id: Int) {
+
+    }
+
+    private fun likeMovie(id: Int) {
+
     }
 
     private fun loadNextItems() {

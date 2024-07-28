@@ -1,35 +1,58 @@
 package miolate.petproject.moviedb.features.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
+import miolate.petproject.moviedb.R
+import miolate.petproject.moviedb.data.remote.THE_MOVIE_DB_IMAGE_URL
 import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.ui.base.SpacerValue
+import miolate.petproject.moviedb.ui.base.SpacerWeight
 import miolate.petproject.moviedb.ui.base.collectAsEffect
+import miolate.petproject.moviedb.ui.theme.fontSizes
 import miolate.petproject.moviedb.ui.theme.spacing
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -64,6 +87,24 @@ fun UI(
     onEvent: (HomeEvents) -> Unit = {}
 ) {
     val pullRefreshState = rememberPullRefreshState(refreshing = uiState.isLoading, onRefresh = {})
+    val gridState = rememberLazyGridState()
+    val uiStateFlow = rememberUpdatedState(newValue = uiState)
+
+    LaunchedEffect(gridState) {
+        combine(
+            snapshotFlow { gridState.firstVisibleItemIndex },
+            snapshotFlow { uiStateFlow }
+        ) { firstVisibleItemIndex, updatedUiState ->
+            Pair(firstVisibleItemIndex, updatedUiState)
+        }
+            //Only launched when gridState triggers, but still
+            //Should be refactored as I don't like this method (not adaptive)
+            //I mean this line and number 6 in it: updatedUiState.value.movies.size - 6
+            .filter { (firstVisibleItemIndex, updatedUiState) -> firstVisibleItemIndex >= updatedUiState.value.movies.size - 6 && !updatedUiState.value.endReached && !updatedUiState.value.isLoadingNewItems }
+            .collect {
+                onEvent(HomeEvents.LoadNextItems)
+            }
+    }
 
     Box(
         modifier = Modifier
@@ -73,15 +114,13 @@ fun UI(
             .pullRefresh(pullRefreshState)
             .padding(horizontal = spacing.small, vertical = spacing.small)
     ) {
-        LazyColumn {
-            itemsIndexed(
-                uiState.movies,
-                key = { _: Int, item: Movie -> item.id }
-            ) { index: Int, movie: Movie ->
-                if (index >= uiState.movies.size - 2 && !uiState.endReached && !uiState.isLoadingNewItems) {
-                    onEvent(HomeEvents.LoadNextItems)
-                }
-                MovieView(movie)
+        LazyVerticalGrid(
+            state = gridState,
+            //adapted for Vertical screen only, for Horizontal Should Use Adaptive
+            columns = GridCells.Fixed(2),
+        ) {
+            items(uiState.movies) { movie ->
+                MovieView(movie = movie, onEvent)
             }
             item {
                 if (uiState.isLoadingNewItems) {
@@ -107,11 +146,65 @@ fun UI(
 }
 
 @Composable
-fun MovieView(movie: Movie) {
-    Column {
-        Text(text = movie.title)
-        Text(text = movie.overview)
-        SpacerValue(spacing.large)
+fun MovieView(movie: Movie, onEvent: (HomeEvents) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(spacing.small)
+    ) {
+        Column(modifier = Modifier.padding(spacing.extraSmall)) {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(2f / 3f),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(THE_MOVIE_DB_IMAGE_URL + movie.posterPath)
+                    .crossfade(true)
+                    .build(),
+                // Used some default placeholder
+                // I don't use SubcomposeAsyncImage due to worse performance
+                placeholder = painterResource(R.drawable.baseline_image_24),
+                contentDescription = "",
+            )
+            Text(
+                text = movie.title,
+                fontSize = fontSizes.medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            SpacerValue(spacing.small)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_star_24),
+                    contentDescription = ""
+                )
+                SpacerValue(spacing.extraSmall)
+                Text(text = "${movie.voteAverage}")
+                SpacerWeight()
+                Text(
+                    text = movie.yearAndMonthUI,
+                    maxLines = 1,
+                )
+            }
+            SpacerValue(spacing.small)
+            Row {
+                Icon(
+                    modifier = Modifier.clickable {
+                        onEvent(HomeEvents.LikeMovie(movie.id))
+                    },
+                    painter = painterResource(id = R.drawable.baseline_favorite_24),
+                    contentDescription = ""
+                )
+                SpacerWeight()
+                Icon(
+                    modifier = Modifier.clickable {
+                        onEvent(HomeEvents.ShareMovie(movie.id))
+                    },
+                    painter = painterResource(id = R.drawable.baseline_share_24),
+                    contentDescription = ""
+                )
+            }
+        }
     }
 }
 
@@ -128,11 +221,12 @@ private fun getPreviewData(): HomeState {
             overview = "Traditional discuss natural wear. Eight business include nothing growth red. Participant current never action begin example situation become.",
             popularity = 77.052,
             posterPath = "https://placeimg.com/453/1/any",
-            releaseDate = "1976-11-28",
+            releaseDate = LocalDate.now(),
+            yearAndMonthUI = "June 2024",
             title = "American serve magazine.",
             video = false,
             voteAverage = 8.6,
-            voteCount = 377
+            voteCount = 377,
         ),
         Movie(
             adult = false,
@@ -144,7 +238,8 @@ private fun getPreviewData(): HomeState {
             overview = "Walk half for. Draw coach store top might policy.\nDebate main population ok position what agency. Answer level rest boy them behind.",
             popularity = 104.471,
             posterPath = "https://placeimg.com/800/263/any",
-            releaseDate = "2018-09-05",
+            releaseDate = LocalDate.now(),
+            yearAndMonthUI = "June 2024",
             title = "Safe medical.",
             video = false,
             voteAverage = 1.3,
@@ -160,7 +255,8 @@ private fun getPreviewData(): HomeState {
             overview = "Hotel know relationship include do from history environment. Let sign wish part start major specific front. Part case show newspaper.",
             popularity = 114.655,
             posterPath = "https://dummyimage.com/301x190",
-            releaseDate = "1986-03-30",
+            releaseDate = LocalDate.now().minusMonths(2),
+            yearAndMonthUI = "June 2024",
             title = "Accept.",
             video = true,
             voteAverage = 3.9,
@@ -176,7 +272,8 @@ private fun getPreviewData(): HomeState {
             overview = "Store small blue growth shoulder reduce. Ok fill your change. Finally become good moment region case.\nFind bill learn act. Community about phone light crime any. Base my ready product red.",
             popularity = 8.702,
             posterPath = "https://placekitten.com/866/227",
-            releaseDate = "1999-06-08",
+            releaseDate = LocalDate.now().minusMonths(2),
+            yearAndMonthUI = "June 2024",
             title = "Already from.",
             video = true,
             voteAverage = 2.7,
@@ -192,7 +289,8 @@ private fun getPreviewData(): HomeState {
             overview = "Tonight amount not. Soldier value foreign of. Side often walk society deal just.\nThus ok institution question. Glass happen it soldier national rule. Instead message loss weight.",
             popularity = 69.414,
             posterPath = "https://placekitten.com/750/496",
-            releaseDate = "1989-03-26",
+            releaseDate = LocalDate.now().minusMonths(4),
+            yearAndMonthUI = "June 2024",
             title = "Issue.",
             video = false,
             voteAverage = 1.8,

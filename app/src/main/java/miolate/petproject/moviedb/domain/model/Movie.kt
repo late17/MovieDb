@@ -1,8 +1,11 @@
 package miolate.petproject.moviedb.domain.model
 
+import java.time.LocalDate
+import java.time.YearMonth
+
 data class Movie(
     val adult: Boolean,
-    val backdropPath: String,
+    val backdropPath: String?,
     val genreIds: List<Int>,
     val id: Int,
     val originalLanguage: String,
@@ -10,7 +13,8 @@ data class Movie(
     val overview: String,
     val popularity: Double,
     val posterPath: String,
-    val releaseDate: String,
+    val releaseDate: LocalDate,
+    val yearAndMonthUI: String,
     val title: String,
     val video: Boolean,
     val voteAverage: Double,

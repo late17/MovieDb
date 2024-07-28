@@ -15,5 +15,9 @@ class RemoteDataSourceImpl(private val client: HttpClient) : RemoteDataSource, B
         client.get {
             url("discover/movie")
             parameter("page", pageNumber)
+            parameter("sort_by", "primary_release_date.des")
+            parameter("vote_count.gte", 100)
+            parameter("vote_average.gte", 7)
+            parameter("language", "en-US")
         }.safeResult()
 }

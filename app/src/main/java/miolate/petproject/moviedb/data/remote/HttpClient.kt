@@ -17,6 +17,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy
 import miolate.petproject.moviedb.BuildConfig
 
+const val THE_MOVIE_DB_URL = "https://api.themoviedb.org/3/"
+const val THE_MOVIE_DB_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
+
 object HttpClient {
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -25,7 +28,7 @@ object HttpClient {
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             url {
-                url("https://api.themoviedb.org/3/")
+                url(THE_MOVIE_DB_URL)
                 parameters.append("api_key", BuildConfig.API_KEY_MOVIE_DB)
             }
         }

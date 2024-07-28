@@ -96,6 +96,7 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.splashscreen)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.coil)
 
     // Hilt
     implementation(libs.hilt)
