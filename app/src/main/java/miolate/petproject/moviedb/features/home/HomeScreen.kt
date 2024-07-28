@@ -85,7 +85,7 @@ fun UI(
     uiState: HomeState,
     onEvent: (HomeEvents) -> Unit = {}
 ) {
-    val pullRefreshState = rememberPullRefreshState(refreshing = uiState.isLoading, onRefresh = {})
+    val pullRefreshState = rememberPullRefreshState(refreshing = uiState.isLoading, onRefresh = {onEvent(HomeEvents.PullRefresh)})
     val gridState = rememberLazyGridState()
     val uiStateFlow = rememberUpdatedState(newValue = uiState)
 

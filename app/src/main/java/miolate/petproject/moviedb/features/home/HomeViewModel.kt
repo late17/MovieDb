@@ -45,11 +45,15 @@ class HomeViewModel @Inject constructor(
             )
         },
         onSuccess = { items, newKey ->
-            _uiState.update {
-                it.copy(
+            _uiState.update { uiState ->
+                uiState.copy(
                     page = newKey,
                     endReached = items.isEmpty(),
-                    movies = _uiState.value.movies + items
+                    // Distinct By may cause some optimization Issue
+                    // But due to API limitation, which in some cases can return
+                    // Identical Data (when I didn't set the filters it did)
+                    // Should be placed here
+                    movies = (_uiState.value.movies + items).distinctBy { it.id }
                 )
             }
         },
@@ -65,9 +69,7 @@ class HomeViewModel @Inject constructor(
     )
 
     init {
-        viewModelScope.launch {
-            moviePagination.loadNextItems()
-        }
+        resetScreen()
     }
 
     override fun onEvent(event: HomeEvents) {
@@ -75,6 +77,7 @@ class HomeViewModel @Inject constructor(
             HomeEvents.LoadNextItems -> loadNextItems()
             is HomeEvents.LikeMovie -> likeMovie(event.id)
             is HomeEvents.ShareMovie -> shareMovie(event.id)
+            HomeEvents.PullRefresh -> resetScreen()
         }
     }
 
@@ -86,9 +89,26 @@ class HomeViewModel @Inject constructor(
 
     }
 
+    private fun resetScreen() {
+        viewModelScope.launch {
+            setIsLoading(true)
+            moviePagination.reset()
+            moviePagination.loadNextItems()
+            setIsLoading(false)
+        }
+    }
+
     private fun loadNextItems() {
         viewModelScope.launch {
             moviePagination.loadNextItems()
+        }
+    }
+
+    private fun setIsLoading(isLoading: Boolean) {
+        _uiState.update {
+            _uiState.value.copy(
+                isLoading = isLoading
+            )
         }
     }
 

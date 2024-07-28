@@ -7,5 +7,6 @@ data class HomeState(
     val page: Int = 1,
     val endReached: Boolean = false,
     val isLoadingNewItems: Boolean = false,
-    val isLoading: Boolean = false,
+    // This can be replaced with Screen State Sealed Class.
+    val isLoading: Boolean = true,
 )
