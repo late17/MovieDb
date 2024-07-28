@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import miolate.petproject.moviedb.R
 import miolate.petproject.moviedb.data.remote.THE_MOVIE_DB_IMAGE_URL
+import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.ui.base.SpacerValue
 import miolate.petproject.moviedb.ui.base.SpacerWeight
@@ -85,7 +86,9 @@ fun UI(
     uiState: HomeState,
     onEvent: (HomeEvents) -> Unit = {}
 ) {
-    val pullRefreshState = rememberPullRefreshState(refreshing = uiState.isLoading, onRefresh = {onEvent(HomeEvents.PullRefresh)})
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = uiState.isLoading,
+        onRefresh = { onEvent(HomeEvents.PullRefresh) })
     val gridState = rememberLazyGridState()
     val uiStateFlow = rememberUpdatedState(newValue = uiState)
 
@@ -189,9 +192,12 @@ fun MovieView(movie: Movie, onEvent: (HomeEvents) -> Unit) {
             Row {
                 Icon(
                     modifier = Modifier.clickable {
-                        onEvent(HomeEvents.LikeMovie(movie.id))
+                        if (movie.isFavourite == IsFavorite.FAVORITE)
+                            onEvent(HomeEvents.RemoveFromFavorite(movie.id))
+                        else
+                            onEvent(HomeEvents.AddToFavorite(movie.id))
                     },
-                    painter = painterResource(id = R.drawable.baseline_favorite_24),
+                    painter = painterResource(id = movie.isFavourite.resIconId),
                     contentDescription = ""
                 )
                 SpacerWeight()
@@ -226,6 +232,8 @@ private fun getPreviewData(): HomeState {
             video = false,
             voteAverage = 8.6,
             voteCount = 377,
+            isFavourite = IsFavorite.FAVORITE,
+            isCashed = true
         ),
         Movie(
             adult = false,
@@ -242,7 +250,9 @@ private fun getPreviewData(): HomeState {
             title = "Safe medical.",
             video = false,
             voteAverage = 1.3,
-            voteCount = 810
+            voteCount = 810,
+            isFavourite = IsFavorite.FAVORITE,
+            isCashed = true
         ),
         Movie(
             adult = false,
@@ -259,7 +269,9 @@ private fun getPreviewData(): HomeState {
             title = "Accept.",
             video = true,
             voteAverage = 3.9,
-            voteCount = 1354
+            voteCount = 1354,
+            isFavourite = IsFavorite.FAVORITE,
+            isCashed = true
         ),
         Movie(
             adult = true,
@@ -276,7 +288,9 @@ private fun getPreviewData(): HomeState {
             title = "Already from.",
             video = true,
             voteAverage = 2.7,
-            voteCount = 540
+            voteCount = 540,
+            isFavourite = IsFavorite.FAVORITE,
+            isCashed = true
         ),
         Movie(
             adult = true,
@@ -293,7 +307,9 @@ private fun getPreviewData(): HomeState {
             title = "Issue.",
             video = false,
             voteAverage = 1.8,
-            voteCount = 1232
+            voteCount = 1232,
+            isFavourite = IsFavorite.FAVORITE,
+            isCashed = true
         ),
     )
     val homeState = HomeState(movies = movies)

@@ -5,9 +5,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import miolate.petproject.moviedb.domain.MoviesRepository
+import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.ui.base.BaseViewModel
 import miolate.petproject.moviedb.ui.events.Action
@@ -70,12 +72,22 @@ class HomeViewModel @Inject constructor(
 
     init {
         resetScreen()
+        viewModelScope.launch {
+            moviesRepository.getFavouritesMovies().collectLatest { movies ->
+                _uiState.update {
+                    it.copy(
+                        favouritesMovies = movies
+                    )
+                }
+            }
+        }
     }
 
     override fun onEvent(event: HomeEvents) {
         when (event) {
             HomeEvents.LoadNextItems -> loadNextItems()
-            is HomeEvents.LikeMovie -> likeMovie(event.id)
+            is HomeEvents.AddToFavorite -> addToFavorite(event.id)
+            is HomeEvents.RemoveFromFavorite -> removeFromFavorite(event.id)
             is HomeEvents.ShareMovie -> shareMovie(event.id)
             HomeEvents.PullRefresh -> resetScreen()
         }
@@ -85,8 +97,29 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private fun likeMovie(id: Int) {
+    private fun removeFromFavorite(id: Int) {
+        viewModelScope.launch {
+            uiState.value.movies.first{it.id == id}.let { movie ->
+                moviesRepository.removeFromFavorites(movie)
+                updateMovie(movie.copy(isFavourite = IsFavorite.NOT_FAVORITE))
+            }
+        }
+    }
 
+    private fun addToFavorite(id: Int) {
+        viewModelScope.launch {
+            uiState.value.movies.first{it.id == id}.let { movie ->
+                updateMovie(movie.copy(isFavourite = IsFavorite.FAVORITE))
+            }
+        }
+    }
+
+    private fun updateMovie(movie: Movie) {
+        movie.let {
+            _uiState.update {
+                it.insertMovie(movie)
+            }
+        }
     }
 
     private fun resetScreen() {

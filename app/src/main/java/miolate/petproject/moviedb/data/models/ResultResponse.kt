@@ -1,8 +1,10 @@
 package miolate.petproject.moviedb.data.models
 
 import kotlinx.serialization.Serializable
+import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.util.releaseDateToYearAndMonth
+import miolate.petproject.moviedb.util.roundWithDecimalsToSave
 import miolate.petproject.moviedb.util.standardTimeToLocalDate
 
 @Serializable
@@ -36,7 +38,9 @@ data class ResultResponse(
         yearAndMonthUI = releaseDate.releaseDateToYearAndMonth(),
         title,
         video,
-        voteAverage,
-        voteCount
+        (voteCount / 2.0).roundWithDecimalsToSave(1),
+        voteCount,
+        isFavourite = IsFavorite.NOT_FAVORITE,
+        isCashed = false
     )
 }
