@@ -43,7 +43,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import miolate.petproject.moviedb.R
 import miolate.petproject.moviedb.data.remote.THE_MOVIE_DB_IMAGE_URL
 import miolate.petproject.moviedb.domain.model.Movie

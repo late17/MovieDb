@@ -4,8 +4,6 @@ import kotlinx.serialization.Serializable
 import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.util.releaseDateToYearAndMonth
 import miolate.petproject.moviedb.util.standardTimeToLocalDate
-import miolate.petproject.moviedb.util.standardTimeToYearAndMonth
-import miolate.petproject.moviedb.util.yearAndMonthToYearMonth
 
 @Serializable
 data class ResultResponse(

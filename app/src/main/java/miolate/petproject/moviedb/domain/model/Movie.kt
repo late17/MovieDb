@@ -1,7 +1,6 @@
 package miolate.petproject.moviedb.domain.model
 
 import java.time.LocalDate
-import java.time.YearMonth
 
 data class Movie(
     val adult: Boolean,
