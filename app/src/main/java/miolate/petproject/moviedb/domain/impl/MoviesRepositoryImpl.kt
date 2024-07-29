@@ -13,7 +13,7 @@ import miolate.petproject.moviedb.util.runOnDefault
 
 class MoviesRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
-    private val moviesDatabase: MoviesDatabase
+    private val moviesDatabase: MoviesDatabase,
 ) : MoviesRepository {
 
     override suspend fun getFavouritesMovies(): Flow<List<Movie>> = moviesDatabase.getAllFavorite()

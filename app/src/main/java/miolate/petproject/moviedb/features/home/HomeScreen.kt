@@ -168,10 +168,10 @@ fun DiscoverPage(
         ) { firstVisibleItemIndex, updatedUiState ->
             Pair(firstVisibleItemIndex, updatedUiState)
         }
-            //Only launched when gridState triggers, but still
-            //Should be refactored as I don't like this method (not adaptive)
-            //I mean this line and number 4 in it: updatedUiState.value.movies.size - 4
-            .filter { (firstVisibleItemIndex, movies) -> firstVisibleItemIndex >= movies.keys.size - 4 }
+            // Only launched when gridState triggers, but still
+            // Should be refactored as I don't like this method (not adaptive)
+            //
+            .filter { (firstVisibleItemIndex, movies) -> firstVisibleItemIndex >= movies.values.size + movies.keys.size }
             .collect {
                 onEvent(HomeEvents.LoadNextItems)
             }
@@ -189,7 +189,11 @@ fun DiscoverPage(
         ) {
             groupedMovies.forEach { list ->
                 item(key = list.key, span = { GridItemSpan(2) }) {
-                    Text(text = list.key.toUI())
+                    Text(
+                        modifier = Modifier.padding(spacing.small).padding(top = spacing.small),
+                        text = list.key.toUI(),
+                        fontSize = fontSizes.large
+                    )
                 }
                 items(list.value, key = {it.id}){ movie ->
                     MovieView(movie = movie, onEvent)
@@ -253,10 +257,6 @@ fun MovieView(movie: Movie, onEvent: (HomeEvents) -> Unit) {
                 SpacerValue(spacing.extraSmall)
                 Text(text = "${movie.voteAverage}")
                 SpacerWeight()
-                Text(
-                    text = movie.yearAndMonthUI,
-                    maxLines = 1,
-                )
             }
             SpacerValue(spacing.small)
             Row {
@@ -297,7 +297,6 @@ private fun getPreviewData(): HomeState {
             popularity = 77.052,
             posterPath = "https://placeimg.com/453/1/any",
             releaseDate = LocalDate.now(),
-            yearAndMonthUI = "June 2024",
             yearAndMonth = YearMonth.now(),
             title = "American serve magazine.",
             video = false,
@@ -318,8 +317,6 @@ private fun getPreviewData(): HomeState {
             posterPath = "https://placeimg.com/800/263/any",
             releaseDate = LocalDate.now(),
             yearAndMonth = YearMonth.now(),
-
-            yearAndMonthUI = "June 2024",
             title = "Safe medical.",
             video = false,
             voteAverage = 1.3,
@@ -339,8 +336,6 @@ private fun getPreviewData(): HomeState {
             posterPath = "https://dummyimage.com/301x190",
             releaseDate = LocalDate.now().minusMonths(2),
             yearAndMonth = YearMonth.now(),
-
-            yearAndMonthUI = "June 2024",
             title = "Accept.",
             video = true,
             voteAverage = 3.9,
@@ -360,8 +355,6 @@ private fun getPreviewData(): HomeState {
             posterPath = "https://placekitten.com/866/227",
             releaseDate = LocalDate.now().minusMonths(2),
             yearAndMonth = YearMonth.now(),
-
-            yearAndMonthUI = "June 2024",
             title = "Already from.",
             video = true,
             voteAverage = 2.7,
@@ -381,7 +374,6 @@ private fun getPreviewData(): HomeState {
             posterPath = "https://placekitten.com/750/496",
             releaseDate = LocalDate.now().minusMonths(4),
             yearAndMonth = YearMonth.now(),
-            yearAndMonthUI = "June 2024",
             title = "Issue.",
             video = false,
             voteAverage = 1.8,
