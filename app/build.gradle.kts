@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
 import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
@@ -82,8 +81,11 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
 
-    // Compose
+    // UI & Compose
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
@@ -93,10 +95,11 @@ dependencies {
     implementation(libs.material.icons.extended)
     implementation(libs.navigation.compose)
     implementation(libs.ui.lifecycle.compose)
-
-    // UI Utils
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.compose)
     implementation(libs.splashscreen)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.coil)
 
     // Hilt
     implementation(libs.hilt)

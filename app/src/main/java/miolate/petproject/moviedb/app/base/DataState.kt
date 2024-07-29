@@ -8,7 +8,7 @@ sealed interface DataState<out T, out E : RootError> {
 
     data class Success<T, E : RootError>(val body: T) : DataState<T, E>
 
-    data class Loading <T, E : RootError>(val body: T? = null) : DataState<T, E>
+    data class Loading<T, E : RootError>(val body: T? = null) : DataState<T, E>
 
 
     fun getOrNull() =

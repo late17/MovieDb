@@ -6,12 +6,12 @@ core-ktx = "1.13.1"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
-lifecycle-runtime-ktx = "2.8.3"
-activity-compose = "1.9.0"
+lifecycle-runtime-ktx = "2.8.4"
+activity-compose = "1.9.1"
 compose-bom = "2024.06.00"
-appcompat = "1.7.0"
-material = "1.12.0"
 hilt = "2.51.1"
+mockito = "4.0.0"
+mockitoKotlin = "3.2.0"
 navigation-compose = "2.7.7"
 hilt-navigation-compose = "1.2.0"
 coil = "2.6.0"
@@ -21,9 +21,8 @@ kotlin-plugin-serialization = "1.9.22"
 accompanist-systemuicontroller = "0.27.0"
 ktor = "2.3.12"
 room = "2.6.1"
-credential-manager = "1.3.0-rc01"
-google-auth = "1.1.1"
-lifecyle-aware = "2.8.3"
+lifecyle-aware = "2.8.4"
+paging = "3.3.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -33,6 +32,9 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -62,9 +64,8 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
-#androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credential-manager" }
-#androidx-credentials-playservices = { group = "androidx.credentials", name = " credentials-play-services-auth", version.ref = "credential-manager" }
-#auth-google = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-auth" }
+androidx-paging = {group = "androidx.paging", name = "paging-runtime", version.ref = "paging"}
+androidx-paging-compose = {group = "androidx.paging", name = "paging-compose", version.ref = "paging"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

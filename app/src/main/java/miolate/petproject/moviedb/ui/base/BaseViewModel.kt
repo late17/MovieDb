@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 abstract class BaseViewModel<UiState, UiEvent>(
     initialState: () -> UiState,
-    ) : ViewModel() {
+) : ViewModel() {
 
     /**
      * Compose ui state.
      * Change this state only via copy methods.
      */
-    protected var _state: MutableStateFlow<UiState> = MutableStateFlow(initialState.invoke())
-    val uiState: StateFlow<UiState> = _state
+    protected var _uiState: MutableStateFlow<UiState> = MutableStateFlow(initialState.invoke())
+    val uiState: StateFlow<UiState> = _uiState
 
     /**
      * Sends an event of an action that happened
