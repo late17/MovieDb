@@ -1,7 +1,6 @@
 package miolate.petproject.moviedb.features.home
 
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.util.fastAny
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -14,13 +13,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import miolate.petproject.moviedb.app.base.DataError
+import miolate.petproject.moviedb.app.base.DataResult
 import miolate.petproject.moviedb.domain.MoviesRepository
 import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
+import miolate.petproject.moviedb.features.home.data.DefaultPaginator
+import miolate.petproject.moviedb.features.home.data.HomeEvents
+import miolate.petproject.moviedb.features.home.data.HomeState
+import miolate.petproject.moviedb.features.home.data.Paginator
+import miolate.petproject.moviedb.features.home.data.ScreenStatus
 import miolate.petproject.moviedb.ui.base.BaseViewModel
 import miolate.petproject.moviedb.ui.events.Action
 import java.time.YearMonth
-import java.util.SortedMap
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +41,12 @@ class HomeViewModel @Inject constructor(
 
     @Stable
     val groupedMovies: StateFlow<Map<YearMonth, List<Movie>>> = uiState.map { state ->
-        val toSortedMap = state.movies.map { m ->
+        val movies = if (uiState.value.status == ScreenStatus.NoInternet)
+            state.cashMovies
+        else
+            state.movies
+
+        val toSortedMap = movies.map { m ->
             if (state.favouritesMovies.any { it.id == m.id })
                 m.copy(isFavourite = IsFavorite.FAVORITE)
             else
@@ -63,10 +73,8 @@ class HomeViewModel @Inject constructor(
         getNextKey = {
             uiState.value.page + 1
         },
-        onError = {
-            _actions.tryEmit(
-                HomeActions.ShowError("Show Error")
-            )
+        onError = { error ->
+            handleError(error)
         },
         onSuccess = { items, newKey ->
             _uiState.update { uiState ->
@@ -78,9 +86,10 @@ class HomeViewModel @Inject constructor(
                     // Identical Data (when I didn't set the filters it did)
                     // Should be placed here
                     movies = (uiState.movies + items)
-                        .distinctBy { it.id }
+                        .distinctBy { it.id },
                 )
             }
+            setScreenStatus(ScreenStatus.Success)
         },
         onReset = {
             _uiState.update {
@@ -139,28 +148,55 @@ class HomeViewModel @Inject constructor(
 
     private fun resetScreen() {
         viewModelScope.launch {
-            setIsLoading(true)
+            setScreenStatus(ScreenStatus.Loading)
             moviePagination.reset()
             moviePagination.loadNextItems()
-            setIsLoading(false)
         }
     }
 
     private fun loadNextItems() {
         viewModelScope.launch {
-            moviePagination.loadNextItems()
+            if (uiState.value.status != ScreenStatus.NoInternet)
+                moviePagination.loadNextItems()
         }
     }
 
-    private fun setIsLoading(isLoading: Boolean) {
+    private suspend fun handleError(error: DataResult.Failure<List<Movie>, DataError>) {
+        _actions.tryEmit(
+            HomeActions.ShowToast(error.e)
+        )
+
+        when (error.e) {
+            DataError.Network.NO_INTERNET -> {
+                loadCashedMovies()
+            }
+
+            else -> {
+                // New Error Screen Status can be added
+                setScreenStatus(ScreenStatus.Loading)
+            }
+        }
+    }
+
+    private suspend fun loadCashedMovies() {
+        val cashMovies = moviesRepository.getCashMovies()
         _uiState.update {
-            _uiState.value.copy(
-                isLoading = isLoading
+            it.copy(
+                cashMovies = cashMovies
+            )
+        }
+        setScreenStatus(ScreenStatus.NoInternet)
+    }
+
+    private fun setScreenStatus(screenStatus: ScreenStatus) {
+        _uiState.update {
+            it.copy(
+                status = screenStatus
             )
         }
     }
 
     sealed class HomeActions : Action {
-        data class ShowError(val errorText: String) : HomeActions()
+        data class ShowToast(val error: DataError?) : HomeActions()
     }
 }

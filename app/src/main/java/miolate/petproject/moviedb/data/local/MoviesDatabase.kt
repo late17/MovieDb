@@ -38,9 +38,21 @@ class MoviesDatabase(private val movieDao: MovieDao) : BaseRepository() {
         }
     }
 
+    suspend fun insertAll(movies: List<Movie>) {
+        runOnDefault {
+            movieDao.insertAll(movies.map { it.toMovieEntity() })
+        }
+    }
+
     suspend fun delete(movie: Movie) {
         runOnDefault {
             movieDao.delete(movie.toMovieEntity())
+        }
+    }
+
+    suspend fun deleteAll(movies: List<Movie>) {
+        runOnDefault {
+            movieDao.deleteAll(movies.map { it.toMovieEntity() })
         }
     }
 

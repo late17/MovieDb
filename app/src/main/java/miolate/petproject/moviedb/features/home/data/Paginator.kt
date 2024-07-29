@@ -1,4 +1,4 @@
-package miolate.petproject.moviedb.features.home
+package miolate.petproject.moviedb.features.home.data
 
 interface Paginator<Key, Item> {
 

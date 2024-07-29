@@ -1,4 +1,4 @@
-package miolate.petproject.moviedb.features.home
+package miolate.petproject.moviedb.features.home.data
 
 import miolate.petproject.moviedb.app.base.DataError
 import miolate.petproject.moviedb.app.base.DataResult
@@ -8,7 +8,7 @@ class DefaultPaginator<Key, Item>(
     private inline val onLoadUpdated: (Boolean) -> Unit,
     private inline val onRequest: suspend (nextKey: Key) -> DataResult<List<Item>, DataError>,
     private inline val getNextKey: suspend (List<Item>) -> Key,
-    private inline val onError: suspend (Throwable?) -> Unit,
+    private inline val onError: suspend (DataResult.Failure<List<Item>, DataError>) -> Unit,
     private inline val onSuccess: suspend (items: List<Item>, newKey: Key) -> Unit,
     private inline val onReset: suspend () -> Unit
 ) : Paginator<Key, Item> {
@@ -32,7 +32,7 @@ class DefaultPaginator<Key, Item>(
             }
 
             is DataResult.Failure -> {
-                onError(Throwable(result.message))
+                onError(result)
                 onLoadUpdated(false)
                 return
             }

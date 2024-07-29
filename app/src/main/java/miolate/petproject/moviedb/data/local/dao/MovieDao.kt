@@ -19,8 +19,14 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(movie: MovieEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(movie: List<MovieEntity>)
+
     @Delete
     fun delete(movie: MovieEntity)
+
+    @Delete
+    fun deleteAll(movie: List<MovieEntity>)
 
     @Update
     fun update(movie: MovieEntity): Int

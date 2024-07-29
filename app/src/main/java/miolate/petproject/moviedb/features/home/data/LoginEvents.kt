@@ -1,4 +1,4 @@
-package miolate.petproject.moviedb.features.home
+package miolate.petproject.moviedb.features.home.data
 
 sealed interface HomeEvents {
     data class AddToFavorite(val id: Int) : HomeEvents
