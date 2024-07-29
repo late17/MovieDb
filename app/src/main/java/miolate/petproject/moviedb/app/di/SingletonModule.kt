@@ -1,7 +1,6 @@
 package miolate.petproject.moviedb.app.di
 
 import android.content.Context
-import androidx.room.Room
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

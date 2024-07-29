@@ -1,6 +1,8 @@
 package miolate.petproject.moviedb.data.local.entities
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 @Entity(tableName = "movie")

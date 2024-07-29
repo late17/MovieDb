@@ -194,12 +194,14 @@ fun DiscoverPage(
             groupedMovies.forEach { list ->
                 item(key = list.key, span = { GridItemSpan(2) }) {
                     Text(
-                        modifier = Modifier.padding(spacing.small).padding(top = spacing.small),
+                        modifier = Modifier
+                            .padding(spacing.small)
+                            .padding(top = spacing.small),
                         text = list.key.toUI(),
                         fontSize = fontSizes.large
                     )
                 }
-                items(list.value, key = {it.id}){ movie ->
+                items(list.value, key = { it.id }) { movie ->
                     MovieView(movie = movie, onEvent)
                 }
             }

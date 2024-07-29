@@ -28,7 +28,10 @@ interface ViewModelScopedModule {
 
         @Provides
         @ViewModelScoped
-        fun providesMoviesRepositoryImpl(remoteDataSource: RemoteDataSource, moviesDatabaseImpl: MoviesDatabaseImpl): MoviesRepositoryImpl {
+        fun providesMoviesRepositoryImpl(
+            remoteDataSource: RemoteDataSource,
+            moviesDatabaseImpl: MoviesDatabaseImpl
+        ): MoviesRepositoryImpl {
             return MoviesRepositoryImpl(remoteDataSource, moviesDatabaseImpl)
         }
 

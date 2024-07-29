@@ -16,7 +16,6 @@ import java.net.UnknownHostException
 open class BaseKtorApi {
 
 
-
     protected suspend inline fun <reified T> HttpResponse.safeResult(): DataResult<T, DataError> =
         try {
             when (this.status.value) {

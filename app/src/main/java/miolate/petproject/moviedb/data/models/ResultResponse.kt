@@ -3,7 +3,6 @@ package miolate.petproject.moviedb.data.models
 import kotlinx.serialization.Serializable
 import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
-import miolate.petproject.moviedb.util.releaseDateToYearAndMonth
 import miolate.petproject.moviedb.util.roundWithDecimalsToSave
 import miolate.petproject.moviedb.util.standardTimeToLocalDate
 import miolate.petproject.moviedb.util.standardTimeToYearAndMonth

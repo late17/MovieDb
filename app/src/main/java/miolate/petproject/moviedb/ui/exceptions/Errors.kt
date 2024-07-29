@@ -8,7 +8,7 @@ fun DataError?.localizedErrorMessage(context: Context): String {
 
     // This can be customized to return any new error, now only Network ones.
     //
-    return when(this){
+    return when (this) {
         DataError.Network.REQUEST_TIMEOUT -> context.getString(R.string.unknown_error)
         DataError.Network.TOO_MANY_REQUESTS -> context.getString(R.string.unknown_error)
         DataError.Network.INVALID_PARAMETERS -> context.getString(R.string.unknown_error)

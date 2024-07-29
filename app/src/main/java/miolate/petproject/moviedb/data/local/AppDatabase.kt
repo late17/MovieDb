@@ -1,7 +1,10 @@
 package miolate.petproject.moviedb.data.local
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import miolate.petproject.moviedb.data.local.converters.IntListConverter
 import miolate.petproject.moviedb.data.local.converters.LocalDateConverter
 import miolate.petproject.moviedb.data.local.dao.MovieDao
