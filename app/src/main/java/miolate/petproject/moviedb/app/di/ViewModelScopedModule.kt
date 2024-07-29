@@ -8,6 +8,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
 import miolate.petproject.moviedb.data.local.AppDatabase
 import miolate.petproject.moviedb.data.local.MoviesDatabase
+import miolate.petproject.moviedb.data.local.MoviesDatabaseImpl
 import miolate.petproject.moviedb.data.local.dao.MovieDao
 import miolate.petproject.moviedb.data.remote.RemoteDataSource
 import miolate.petproject.moviedb.domain.MoviesRepository
@@ -20,12 +21,15 @@ interface ViewModelScopedModule {
     @Binds
     fun bindsMoviesRepository(moviesRepository: MoviesRepositoryImpl): MoviesRepository
 
+    @Binds
+    fun bindsMovieDatabase(moviesDatabaseImpl: MoviesDatabaseImpl): MoviesDatabase
+
     companion object {
 
         @Provides
         @ViewModelScoped
-        fun providesMoviesRepositoryImpl(remoteDataSource: RemoteDataSource, moviesDatabase: MoviesDatabase): MoviesRepositoryImpl {
-            return MoviesRepositoryImpl(remoteDataSource, moviesDatabase)
+        fun providesMoviesRepositoryImpl(remoteDataSource: RemoteDataSource, moviesDatabaseImpl: MoviesDatabaseImpl): MoviesRepositoryImpl {
+            return MoviesRepositoryImpl(remoteDataSource, moviesDatabaseImpl)
         }
 
         @Provides
@@ -36,8 +40,8 @@ interface ViewModelScopedModule {
 
         @Provides
         @ViewModelScoped
-        fun providesMovieDatabase(movieDao: MovieDao): MoviesDatabase {
-            return MoviesDatabase(movieDao)
+        fun providesMovieDatabase(movieDao: MovieDao): MoviesDatabaseImpl {
+            return MoviesDatabaseImpl(movieDao)
         }
     }
 }
