@@ -119,9 +119,4 @@ dependencies {
     implementation(libs.room.ktx)
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
-
-    // Credentials && Auth
-//    implementation(libs.androidx.credentials)
-//    implementation(libs.androidx.credentials.playservices)
-//    implementation(libs.auth.google)
 }
