@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import miolate.petproject.moviedb.app.base.DataError
 import miolate.petproject.moviedb.app.base.DataResult
+import miolate.petproject.moviedb.data.remote.THE_MOVIE_DB_MOVIE_URL
 import miolate.petproject.moviedb.domain.MoviesRepository
 import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
@@ -127,7 +128,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun shareMovie(id: Int) {
-
+        _actions.tryEmit(HomeActions.ShareMovie(THE_MOVIE_DB_MOVIE_URL + id))
     }
 
     private fun removeFromFavorite(id: Int) {
@@ -198,5 +199,6 @@ class HomeViewModel @Inject constructor(
 
     sealed class HomeActions : Action {
         data class ShowToast(val error: DataError?) : HomeActions()
+        data class ShareMovie(val link: String): HomeActions()
     }
 }

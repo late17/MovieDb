@@ -19,6 +19,7 @@ import miolate.petproject.moviedb.BuildConfig
 
 const val THE_MOVIE_DB_URL = "https://api.themoviedb.org/3/"
 const val THE_MOVIE_DB_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
+const val THE_MOVIE_DB_MOVIE_URL = "https://www.themoviedb.org/movie/"
 
 object HttpClient {
 

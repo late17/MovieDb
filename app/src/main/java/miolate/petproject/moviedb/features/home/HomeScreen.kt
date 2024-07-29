@@ -1,5 +1,7 @@
 package miolate.petproject.moviedb.features.home
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +63,7 @@ import miolate.petproject.moviedb.ui.components.Tabs
 import miolate.petproject.moviedb.ui.theme.fontSizes
 import miolate.petproject.moviedb.ui.theme.spacing
 import miolate.petproject.moviedb.ui.toast.showToast
+import miolate.petproject.moviedb.util.shareLink
 import miolate.petproject.moviedb.util.toUI
 import java.time.YearMonth
 
@@ -77,6 +80,10 @@ fun HomeScreen(navController: NavController) {
             when (action) {
                 is HomeViewModel.HomeActions.ShowToast -> {
                     context.showToast(action.error)
+                }
+
+                is HomeViewModel.HomeActions.ShareMovie -> {
+                    context.shareLink(action.link)
                 }
             }
         }

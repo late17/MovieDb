@@ -1,11 +1,14 @@
 package miolate.petproject.moviedb.ui.navigation
 
+import android.os.Bundle
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Stable
@@ -26,6 +29,7 @@ class AppState(
         navController.navigateUp()
     }
 
+    // Should be rewritten, doesn't work as nav bar routing for now.
     fun navigateToBottomBarRoute(route: String) {
         if (route != currentRoute) {
             navController.navigate(route) {
