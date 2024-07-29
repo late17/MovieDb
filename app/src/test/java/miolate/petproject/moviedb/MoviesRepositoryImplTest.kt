@@ -17,12 +17,10 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.time.LocalDate
 import java.time.YearMonth
-
 
 @ExperimentalCoroutinesApi
 class MoviesRepositoryImplTest {
@@ -37,74 +35,15 @@ class MoviesRepositoryImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-//        remoteDataSource = mock()
-//        moviesDatabase = mock()
         moviesRepository = MoviesRepositoryImpl(remoteDataSource, moviesDatabase)
     }
 
-    // Add test cases here
     @Test
     fun testAddAndRemoveFavorites() = runBlocking {
         // Given
-        val movie1 = Movie(
-            adult = false,
-            backdropPath = "backdropPath1",
-            genreIds = listOf(1, 2, 3),
-            id = 1,
-            originalLanguage = "en",
-            originalTitle = "Original Title 1",
-            overview = "Overview 1",
-            popularity = 10.0,
-            posterPath = "posterPath1",
-            releaseDate = LocalDate.of(2022, 7, 29),
-            yearAndMonth = YearMonth.of(2022, 7),
-            title = "Title 1",
-            video = false,
-            voteAverage = 8.0,
-            voteCount = 1000,
-            isFavourite = IsFavorite.NOT_FAVORITE,
-            isCashed = false
-        )
-
-        val movie2 = Movie(
-            adult = false,
-            backdropPath = "backdropPath2",
-            genreIds = listOf(4, 5, 6),
-            id = 2,
-            originalLanguage = "en",
-            originalTitle = "Original Title 2",
-            overview = "Overview 2",
-            popularity = 12.0,
-            posterPath = "posterPath2",
-            releaseDate = LocalDate.of(2022, 8, 29),
-            yearAndMonth = YearMonth.of(2022, 8),
-            title = "Title 2",
-            video = false,
-            voteAverage = 8.5,
-            voteCount = 1500,
-            isFavourite = IsFavorite.NOT_FAVORITE,
-            isCashed = false
-        )
-
-        val movie3 = Movie(
-            adult = false,
-            backdropPath = "backdropPath3",
-            genreIds = listOf(7, 8, 9),
-            id = 3,
-            originalLanguage = "en",
-            originalTitle = "Original Title 3",
-            overview = "Overview 3",
-            popularity = 15.0,
-            posterPath = "posterPath3",
-            releaseDate = LocalDate.of(2022, 9, 29),
-            yearAndMonth = YearMonth.of(2022, 9),
-            title = "Title 3",
-            video = false,
-            voteAverage = 9.0,
-            voteCount = 2000,
-            isFavourite = IsFavorite.NOT_FAVORITE,
-            isCashed = false
-        )
+        val movie1 = createMovie(id = 1, title = "Title 1", isFavorite = IsFavorite.NOT_FAVORITE)
+        val movie2 = createMovie(id = 2, title = "Title 2", isFavorite = IsFavorite.NOT_FAVORITE)
+        val movie3 = createMovie(id = 3, title = "Title 3", isFavorite = IsFavorite.NOT_FAVORITE)
 
         // Add movies to favorites
         moviesRepository.addToFavorites(movie1)
@@ -112,17 +51,17 @@ class MoviesRepositoryImplTest {
         moviesRepository.addToFavorites(movie3)
 
         // Verify the movies are added to the database
-        verify(moviesDatabase).insert(movie1.copy(isFavourite = IsFavorite.FAVORITE))
-        verify(moviesDatabase).insert(movie2.copy(isFavourite = IsFavorite.FAVORITE))
-        verify(moviesDatabase).insert(movie3.copy(isFavourite = IsFavorite.FAVORITE))
+        verifyDatabaseInsert(movie1.copy(isFavourite = IsFavorite.FAVORITE))
+        verifyDatabaseInsert(movie2.copy(isFavourite = IsFavorite.FAVORITE))
+        verifyDatabaseInsert(movie3.copy(isFavourite = IsFavorite.FAVORITE))
 
         // Remove some movies from favorites
         moviesRepository.removeFromFavorites(movie1)
         moviesRepository.removeFromFavorites(movie3)
 
         // Verify the movies are removed from the database
-        verify(moviesDatabase).delete(movie1)
-        verify(moviesDatabase).delete(movie3)
+        verifyDatabaseDelete(movie1)
+        verifyDatabaseDelete(movie3)
 
         // Set the remaining favorite movies in the database
         whenever(moviesDatabase.getAllFavorite()).thenReturn(flowOf(listOf(movie2.copy(isFavourite = IsFavorite.FAVORITE))))
@@ -138,85 +77,10 @@ class MoviesRepositoryImplTest {
     @Test
     fun testCacheMovies() = runBlocking {
         // Given
-        val movie1 = Movie(
-            adult = false,
-            backdropPath = "backdropPath1",
-            genreIds = listOf(1, 2, 3),
-            id = 1,
-            originalLanguage = "en",
-            originalTitle = "Original Title 1",
-            overview = "Overview 1",
-            popularity = 10.0,
-            posterPath = "posterPath1",
-            releaseDate = LocalDate.of(2022, 7, 29),
-            yearAndMonth = YearMonth.of(2022, 7),
-            title = "Title 1",
-            video = false,
-            voteAverage = 8.0,
-            voteCount = 1000,
-            isFavourite = IsFavorite.FAVORITE,
-            isCashed = false
-        )
-
-        val movie2 = Movie(
-            adult = false,
-            backdropPath = "backdropPath2",
-            genreIds = listOf(4, 5, 6),
-            id = 2,
-            originalLanguage = "en",
-            originalTitle = "Original Title 2",
-            overview = "Overview 2",
-            popularity = 12.0,
-            posterPath = "posterPath2",
-            releaseDate = LocalDate.of(2022, 8, 29),
-            yearAndMonth = YearMonth.of(2022, 8),
-            title = "Title 2",
-            video = false,
-            voteAverage = 8.5,
-            voteCount = 1500,
-            isFavourite = IsFavorite.NOT_FAVORITE,
-            isCashed = false
-        )
-
-        val movie3 = Movie(
-            adult = false,
-            backdropPath = "backdropPath3",
-            genreIds = listOf(4, 5, 6),
-            id = 3,
-            originalLanguage = "en",
-            originalTitle = "Original Title 3",
-            overview = "Overview 3",
-            popularity = 12.0,
-            posterPath = "posterPath3",
-            releaseDate = LocalDate.of(2022, 8, 29),
-            yearAndMonth = YearMonth.of(2022, 8),
-            title = "Title 3",
-            video = false,
-            voteAverage = 8.5,
-            voteCount = 1500,
-            isFavourite = IsFavorite.FAVORITE,
-            isCashed = false
-        )
-
-        val movie4 = Movie(
-            adult = false,
-            backdropPath = "backdropPath4",
-            genreIds = listOf(4, 5, 6),
-            id = 4,
-            originalLanguage = "en",
-            originalTitle = "Cashed not Favorite Should Be deleted 4",
-            overview = "Overview 3",
-            popularity = 12.0,
-            posterPath = "posterPath3",
-            releaseDate = LocalDate.of(2022, 8, 29),
-            yearAndMonth = YearMonth.of(2022, 8),
-            title = "Title 4",
-            video = false,
-            voteAverage = 8.5,
-            voteCount = 1500,
-            isFavourite = IsFavorite.NOT_FAVORITE,
-            isCashed = true
-        )
+        val movie1 = createMovie(id = 1, title = "Title 1", isFavorite = IsFavorite.FAVORITE)
+        val movie2 = createMovie(id = 2, title = "Title 2", isFavorite = IsFavorite.NOT_FAVORITE)
+        val movie3 = createMovie(id = 3, title = "Title 3", isFavorite = IsFavorite.FAVORITE)
+        val movie4 = createMovie(id = 4, title = "Title 4", isFavorite = IsFavorite.NOT_FAVORITE, isCashed = true)
 
         val discoverResponse = DiscoverResponse(
             page = 1,
@@ -227,9 +91,9 @@ class MoviesRepositoryImplTest {
 
         whenever(remoteDataSource.getMovies(1)).thenReturn(DataResult.Success(discoverResponse))
 
-        //Adding previously cashed
+        // Adding previously cashed movie
         moviesDatabase.insert(movie4)
-        //Adding to favorite before cashing
+        // Adding to favorite before caching
         moviesRepository.addToFavorites(movie1)
         moviesRepository.addToFavorites(movie3)
         assert(moviesDatabase.getById(movie1.id) == movie1)
@@ -239,25 +103,37 @@ class MoviesRepositoryImplTest {
 
         // Then
         assert(result is DataResult.Success)
-        // Assert that movie Database Contains both movies as cashed
-        // Assert that movie 1 is still favorite and cashed
-        // Assert that movie 2 is not favorite and cashed
-        // Assert that movie 3 is favorite and not cashed
-        // Assert that movie 4 doesn't exist
-        val all = moviesDatabase.getAll()
-        assert(all.any {
-            it.id == movie1.id && it.isFavourite == IsFavorite.FAVORITE && it.isCashed
-        })
-        assert(all.any {
-            it.id == movie2.id && it.isFavourite == IsFavorite.NOT_FAVORITE && it.isCashed
-        })
-        assert(all.any {
-            it.id == movie3.id && it.isFavourite == IsFavorite.FAVORITE && !it.isCashed
-        })
-        assert(!all.any {
-            it.id == movie4.id
-        })
+        // Assert database contents
+        assertDatabaseContains(movie1, IsFavorite.FAVORITE, true)
+        assertDatabaseContains(movie2, IsFavorite.NOT_FAVORITE, true)
+        assertDatabaseContains(movie3, IsFavorite.FAVORITE, false)
+        assertDatabaseNotContains(movie4)
     }
+
+    private fun createMovie(
+        id: Int,
+        title: String,
+        isFavorite: IsFavorite,
+        isCashed: Boolean = false
+    ): Movie = Movie(
+        adult = false,
+        backdropPath = "backdropPath$id",
+        genreIds = listOf(id, id + 1, id + 2),
+        id = id,
+        originalLanguage = "en",
+        originalTitle = "Original Title $id",
+        overview = "Overview $id",
+        popularity = 10.0 + id.toDouble(),
+        posterPath = "posterPath$id",
+        releaseDate = LocalDate.of(2022, 7 + id, 29),
+        yearAndMonth = YearMonth.of(2022, 7 + id),
+        title = title,
+        video = false,
+        voteAverage = 8.0 + id.toDouble() / 10,
+        voteCount = 1000 + id * 500,
+        isFavourite = isFavorite,
+        isCashed = isCashed
+    )
 
     private fun Movie.toResultResponse() = ResultResponse(
         adult = this.adult,
@@ -275,4 +151,26 @@ class MoviesRepositoryImplTest {
         voteAverage = this.voteAverage,
         voteCount = this.voteCount
     )
+
+    private suspend fun verifyDatabaseInsert(movie: Movie) {
+        verify(moviesDatabase).insert(movie)
+    }
+
+    private suspend fun verifyDatabaseDelete(movie: Movie) {
+        verify(moviesDatabase).delete(movie)
+    }
+
+    private suspend fun assertDatabaseContains(movie: Movie, isFavorite: IsFavorite, isCashed: Boolean) {
+        val all = moviesDatabase.getAll()
+        assert(all.any {
+            it.id == movie.id && it.isFavourite == isFavorite && it.isCashed == isCashed
+        })
+    }
+
+    private suspend fun assertDatabaseNotContains(movie: Movie) {
+        val all = moviesDatabase.getAll()
+        assert(!all.any {
+            it.id == movie.id
+        })
+    }
 }
