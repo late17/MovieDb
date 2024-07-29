@@ -12,6 +12,8 @@ compose-bom = "2024.06.00"
 appcompat = "1.7.0"
 material = "1.12.0"
 hilt = "2.51.1"
+mockito = "4.0.0"
+mockitoKotlin = "3.2.0"
 navigation-compose = "2.7.7"
 hilt-navigation-compose = "1.2.0"
 coil = "2.6.0"
@@ -34,6 +36,9 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
