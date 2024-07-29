@@ -16,9 +16,7 @@ class MoviesRepositoryImpl(
     private val moviesDatabase: MoviesDatabase
 ) : MoviesRepository {
 
-    override suspend fun getFavouritesMovies(): Flow<List<Movie>> = runOnDefault {
-        moviesDatabase.getAllFavorite()
-    }
+    override suspend fun getFavouritesMovies(): Flow<List<Movie>> = moviesDatabase.getAllFavorite()
 
     override suspend fun addToFavorites(movie: Movie) {
         moviesDatabase.insert(movie.copy(isFavourite = IsFavorite.FAVORITE))
@@ -31,18 +29,7 @@ class MoviesRepositoryImpl(
     override suspend fun getMovies(pageNumber: Int): DataResult<List<Movie>, DataError> {
         return remoteDataSource.getMovies(pageNumber)
             .mapIfSuccessSus { it ->
-                it.results.map { it.toMovie() }.isFavorite()
+                it.results.map { it.toMovie() }
             }
-    }
-
-    private suspend fun List<Movie>.isFavorite(): List<Movie> {
-        val all = moviesDatabase.getAll()
-        return this.map { movie ->
-            if (all.any { localMovie -> localMovie.id == movie.id && localMovie.isFavourite == IsFavorite.FAVORITE })
-                movie.copy(
-                    isFavourite = IsFavorite.FAVORITE
-                )
-            else movie
-        }
     }
 }

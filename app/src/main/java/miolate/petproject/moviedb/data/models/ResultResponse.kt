@@ -6,6 +6,7 @@ import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.util.releaseDateToYearAndMonth
 import miolate.petproject.moviedb.util.roundWithDecimalsToSave
 import miolate.petproject.moviedb.util.standardTimeToLocalDate
+import miolate.petproject.moviedb.util.standardTimeToYearAndMonth
 
 @Serializable
 data class ResultResponse(
@@ -35,10 +36,10 @@ data class ResultResponse(
         popularity,
         posterPath,
         releaseDate.standardTimeToLocalDate(),
-        yearAndMonthUI = releaseDate.releaseDateToYearAndMonth(),
+        yearAndMonth = releaseDate.standardTimeToYearAndMonth(),
         title,
         video,
-        (voteCount / 2.0).roundWithDecimalsToSave(1),
+        (voteAverage / 2.0).roundWithDecimalsToSave(1),
         voteCount,
         isFavourite = IsFavorite.NOT_FAVORITE,
         isCashed = false

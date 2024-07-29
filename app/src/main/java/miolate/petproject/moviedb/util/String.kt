@@ -16,6 +16,11 @@ fun String.standardTimeToYearAndMonth(): YearMonth {
     return date
 }
 
+fun YearMonth.toUI(): String{
+    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
+    return this.format(formatter)
+}
+
 fun String.yearAndMonthToYearMonth(): YearMonth {
     val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
     return YearMonth.parse(this, formatter)

@@ -3,6 +3,8 @@ package miolate.petproject.moviedb.data.local
 import miolate.petproject.moviedb.data.local.entities.MovieEntity
 import miolate.petproject.moviedb.domain.model.IsFavorite
 import miolate.petproject.moviedb.domain.model.Movie
+import miolate.petproject.moviedb.util.toUI
+import miolate.petproject.moviedb.util.yearAndMonthToYearMonth
 
 abstract class BaseRepository {
 
@@ -18,13 +20,13 @@ abstract class BaseRepository {
             popularity = this.popularity,
             posterPath = this.posterPath,
             releaseDate = this.releaseDate,
-            yearAndMonthUI = this.yearAndMonthUI,
+            yearAndMonthUI = this.yearAndMonth.toUI(),
             title = this.title,
             video = this.video,
             voteAverage = this.voteAverage,
             voteCount = this.voteCount,
             isFavorite = this.isFavourite == IsFavorite.FAVORITE,
-            isCashed = this.isCashed
+            isCashed = this.isCashed,
         )
     }
 
@@ -40,7 +42,7 @@ abstract class BaseRepository {
             popularity = this.popularity,
             posterPath = this.posterPath,
             releaseDate = this.releaseDate,
-            yearAndMonthUI = this.yearAndMonthUI,
+            yearAndMonth = this.yearAndMonthUI.yearAndMonthToYearMonth(),
             title = this.title,
             video = this.video,
             voteAverage = this.voteAverage,
@@ -49,7 +51,7 @@ abstract class BaseRepository {
                 IsFavorite.FAVORITE
             else
                 IsFavorite.NOT_FAVORITE,
-            isCashed = this.isCashed
+            isCashed = this.isCashed,
         )
     }
 }

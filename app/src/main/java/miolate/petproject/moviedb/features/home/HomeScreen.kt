@@ -1,5 +1,6 @@
 package miolate.petproject.moviedb.features.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,9 +14,12 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
@@ -27,12 +31,12 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,15 +54,19 @@ import miolate.petproject.moviedb.domain.model.Movie
 import miolate.petproject.moviedb.ui.base.SpacerValue
 import miolate.petproject.moviedb.ui.base.SpacerWeight
 import miolate.petproject.moviedb.ui.base.collectAsEffect
+import miolate.petproject.moviedb.ui.components.Tabs
 import miolate.petproject.moviedb.ui.theme.fontSizes
 import miolate.petproject.moviedb.ui.theme.spacing
+import miolate.petproject.moviedb.util.toUI
 import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun HomeScreen(navController: NavController) {
 
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val groupedMovies by viewModel.groupedMovies.collectAsStateWithLifecycle()
 
     viewModel.apply {
         actions.collectAsEffect { action ->
@@ -70,39 +78,100 @@ fun HomeScreen(navController: NavController) {
         }
     }
 
-    UI(uiState, viewModel::onEvent)
+    UI(uiState, groupedMovies, viewModel::onEvent)
 }
 
 @Composable
 @Preview
 fun HomeScreenPreview() {
     val homeState = getPreviewData()
-    UI(uiState = homeState) {}
+    UI(state = homeState, emptyMap()) {}
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun UI(
+    state: HomeState,
+    groupedMovies: Map<YearMonth, List<Movie>>,
+    onEvent: (HomeEvents) -> Unit = {}
+) {
+    val tabs =
+        listOf(stringResource(id = R.string.discover), stringResource(id = R.string.favorites))
+    val pagerState = rememberPagerState(0, 0F) { tabs.size }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = spacing.small, vertical = spacing.small)
+    ) {
+        Tabs(
+            tabs.size,
+            pagerState,
+            tabs,
+            Modifier
+        )
+
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxSize()
+        ) { page ->
+            when (page) {
+                0 -> {
+                    DiscoverPage(state, groupedMovies, onEvent)
+                }
+
+                1 -> {
+                    FavoritePage(state, onEvent)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FavoritePage(state: HomeState, onEvent: (HomeEvents) -> Unit) {
+    val gridState = rememberLazyGridState()
+
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
+        state = gridState,
+        //adapted for Vertical screen only, for Horizontal Should Use Adaptive
+        columns = GridCells.Fixed(2),
+    ) {
+        items(state.favouritesMovies) { movie ->
+            MovieView(movie = movie, onEvent)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UI(
-    uiState: HomeState,
-    onEvent: (HomeEvents) -> Unit = {}
+fun DiscoverPage(
+    state: HomeState,
+    groupedMovies: Map<YearMonth, List<Movie>>,
+    onEvent: (HomeEvents) -> Unit
 ) {
+
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = uiState.isLoading,
-        onRefresh = { onEvent(HomeEvents.PullRefresh) })
+        refreshing = state.isLoading,
+        onRefresh = { onEvent(HomeEvents.PullRefresh) }
+    )
     val gridState = rememberLazyGridState()
-    val uiStateFlow = rememberUpdatedState(newValue = uiState)
 
     LaunchedEffect(gridState) {
         combine(
             snapshotFlow { gridState.firstVisibleItemIndex },
-            snapshotFlow { uiStateFlow }
+            snapshotFlow { groupedMovies }
         ) { firstVisibleItemIndex, updatedUiState ->
             Pair(firstVisibleItemIndex, updatedUiState)
         }
             //Only launched when gridState triggers, but still
             //Should be refactored as I don't like this method (not adaptive)
-            //I mean this line and number 6 in it: updatedUiState.value.movies.size - 6
-            .filter { (firstVisibleItemIndex, updatedUiState) -> firstVisibleItemIndex >= updatedUiState.value.movies.size - 6 && !updatedUiState.value.endReached && !updatedUiState.value.isLoadingNewItems }
+            //I mean this line and number 4 in it: updatedUiState.value.movies.size - 4
+            .filter { (firstVisibleItemIndex, movies) -> firstVisibleItemIndex >= movies.keys.size - 4 }
             .collect {
                 onEvent(HomeEvents.LoadNextItems)
             }
@@ -111,21 +180,23 @@ fun UI(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
             .pullRefresh(pullRefreshState)
-            .padding(horizontal = spacing.small, vertical = spacing.small)
     ) {
         LazyVerticalGrid(
             state = gridState,
             //adapted for Vertical screen only, for Horizontal Should Use Adaptive
             columns = GridCells.Fixed(2),
         ) {
-            items(uiState.movies) { movie ->
-                MovieView(movie = movie, onEvent)
+            groupedMovies.forEach { list ->
+                item(key = list.key, span = { GridItemSpan(2) }) {
+                    Text(text = list.key.toUI())
+                }
+                items(list.value, key = {it.id}){ movie ->
+                    MovieView(movie = movie, onEvent)
+                }
             }
             item {
-                if (uiState.isLoadingNewItems) {
+                if (state.isLoadingNewItems && !state.isLoading) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -139,12 +210,11 @@ fun UI(
         }
 
         PullRefreshIndicator(
-            uiState.isLoading,
+            state.isLoading,
             pullRefreshState,
             Modifier.align(Alignment.TopCenter)
         )
     }
-
 }
 
 @Composable
@@ -228,6 +298,7 @@ private fun getPreviewData(): HomeState {
             posterPath = "https://placeimg.com/453/1/any",
             releaseDate = LocalDate.now(),
             yearAndMonthUI = "June 2024",
+            yearAndMonth = YearMonth.now(),
             title = "American serve magazine.",
             video = false,
             voteAverage = 8.6,
@@ -246,6 +317,8 @@ private fun getPreviewData(): HomeState {
             popularity = 104.471,
             posterPath = "https://placeimg.com/800/263/any",
             releaseDate = LocalDate.now(),
+            yearAndMonth = YearMonth.now(),
+
             yearAndMonthUI = "June 2024",
             title = "Safe medical.",
             video = false,
@@ -265,6 +338,8 @@ private fun getPreviewData(): HomeState {
             popularity = 114.655,
             posterPath = "https://dummyimage.com/301x190",
             releaseDate = LocalDate.now().minusMonths(2),
+            yearAndMonth = YearMonth.now(),
+
             yearAndMonthUI = "June 2024",
             title = "Accept.",
             video = true,
@@ -284,6 +359,8 @@ private fun getPreviewData(): HomeState {
             popularity = 8.702,
             posterPath = "https://placekitten.com/866/227",
             releaseDate = LocalDate.now().minusMonths(2),
+            yearAndMonth = YearMonth.now(),
+
             yearAndMonthUI = "June 2024",
             title = "Already from.",
             video = true,
@@ -303,6 +380,7 @@ private fun getPreviewData(): HomeState {
             popularity = 69.414,
             posterPath = "https://placekitten.com/750/496",
             releaseDate = LocalDate.now().minusMonths(4),
+            yearAndMonth = YearMonth.now(),
             yearAndMonthUI = "June 2024",
             title = "Issue.",
             video = false,

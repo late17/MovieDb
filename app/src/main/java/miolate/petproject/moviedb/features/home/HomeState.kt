@@ -1,8 +1,11 @@
 package miolate.petproject.moviedb.features.home
 
+import androidx.compose.runtime.Immutable
 import miolate.petproject.moviedb.domain.model.Movie
 
+@Immutable
 data class HomeState(
+    //
     val movies: List<Movie> = emptyList(),
     val favouritesMovies: List<Movie> = emptyList(),
     val page: Int = 1,
@@ -10,14 +13,4 @@ data class HomeState(
     val isLoadingNewItems: Boolean = false,
     // This can be replaced with Screen State Sealed Class.
     val isLoading: Boolean = true,
-) {
-
-    fun insertMovie(updatedMovie: Movie): HomeState {
-        val newList = movies.toMutableList()
-        val indexOfFirst = newList.indexOfFirst { it.id == updatedMovie.id }
-        newList[indexOfFirst] = updatedMovie
-        return this.copy(
-            movies = newList
-        )
-    }
-}
+)

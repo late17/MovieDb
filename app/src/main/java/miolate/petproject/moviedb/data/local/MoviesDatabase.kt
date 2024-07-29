@@ -1,7 +1,6 @@
 package miolate.petproject.moviedb.data.local
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import miolate.petproject.moviedb.data.local.dao.MovieDao
 import miolate.petproject.moviedb.domain.model.Movie
@@ -15,13 +14,16 @@ class MoviesDatabase(private val movieDao: MovieDao) : BaseRepository() {
         }
     }
 
-    fun getAllFavorite(): Flow<List<Movie>> {
-        return movieDao
-            .getAllFlow()
-            .map { list -> list
-                .filter { it.isFavorite }
-                .map { it.toMovie() }
-            }
+    suspend fun getAllFavorite(): Flow<List<Movie>> {
+        return runOnDefault {
+            movieDao
+                .getAllFlow()
+                .map { list ->
+                    list
+                        .filter { it.isFavorite }
+                        .map { it.toMovie() }
+                }
+        }
     }
 
     suspend fun getById(movieId: Int): Movie? {

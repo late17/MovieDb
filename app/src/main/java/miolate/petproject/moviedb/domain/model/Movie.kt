@@ -1,6 +1,7 @@
 package miolate.petproject.moviedb.domain.model
 
 import java.time.LocalDate
+import java.time.YearMonth
 
 data class Movie(
     val adult: Boolean,
@@ -13,7 +14,7 @@ data class Movie(
     val popularity: Double,
     val posterPath: String,
     val releaseDate: LocalDate,
-    val yearAndMonthUI: String,
+    val yearAndMonth: YearMonth,
     val title: String,
     val video: Boolean,
     val voteAverage: Double,
